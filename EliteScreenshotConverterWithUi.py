@@ -51,7 +51,6 @@ class CThread(QThread):
 
     def run(self):
         global completed
-        #print("self.completed " + str(completed))
         if completed < 100:
             global percentPerItem
             time.sleep(0.1)
@@ -159,9 +158,6 @@ class MainWindowUIClass(Ui_MainWindow):
                 if (os.path.isfile(originalfile)):
                     img = Image.open(originalfile)
                     newfilename =  f'{self.build_file_name(item)}.png'
-                    #print("original file " + originalfile)
-                    #print("newfilename " + newfilename)
-                    #print("original file " + originalfile)
                     savefilefull = f'{self.saveDir}\\{newfilename}'
                     time.sleep(0.01)
 
