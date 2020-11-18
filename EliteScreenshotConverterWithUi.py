@@ -8,20 +8,6 @@ from PIL import Image
 percentPerItem = 1
 completed = 0
 
-class Model:
-    def makeDirIfNotExist( self, directory ):
-        #if savepath doesn't exist, create it
-        if not os.path.exists(directory):
-            os.makedirs(directory)
-        return 1
-
-    def setDirectory( self, directory ):
-        if self.makeDirIfNotExist(directory):
-            return directory
-        else:
-            return "C:\\"
-
-
 class WorkerSignals(QObject):
     finished = pyqtSignal()  # QtCore.Signal
     error = pyqtSignal(tuple)
@@ -84,7 +70,6 @@ class MainWindowUIClass(Ui_MainWindow):
     
     def __init__(self, *args, **kwargs):
         super(MainWindowUIClass, self).__init__(*args, **kwargs)
-        self.model = Model()
         self.threadpool = QThreadPool()
         self.fill_thread = None
 
@@ -108,69 +93,45 @@ class MainWindowUIClass(Ui_MainWindow):
                         None,
                         "Select Elite Dangerous Journal directory",
                         self.journalDir)
+            self.lineEdit.setText(directory)
         elif lineType == "screenshots":
             directory = QtWidgets.QFileDialog.getExistingDirectory(
                         None,
                         "Select Elite Dangerous Screenshots directory",
                         self.screenshotDir)
+            self.lineEdit_2.setText(directory)
         elif lineType == "save":
             directory = QtWidgets.QFileDialog.getExistingDirectory(
                         None,
                         "Select Elite Resized save directory",
                         self.saveDir)
-        else:
-            print ("error in browse slot 1")
-            return
-        if directory:
-            if lineType == "journal":
-                print ("JOURNAL")
-                self.lineEdit.setText(directory)
-            elif lineType == "screenshots":
-                print ("SCREENSHOTS")
-                self.lineEdit_2.setText(directory)
-            elif lineType == "save":
-                print ("SAVE")
-                self.lineEdit_3.setText(directory)
-            else:
-                print ("error in browse slot 2")
-                return
+            self.lineEdit_3.setText(directory)
 
-
-    def setAll(self):
-        print("set all")
-        directory =  self.lineEdit.text()
-        self.journalDir = self.model.setDirectory(directory)
-        directory =  self.lineEdit_2.text()
-        self.screenshotDir = self.model.setDirectory(directory)
-        directory =  self.lineEdit_3.text()
-        self.saveDir = self.model.setDirectory(directory)
-
-
-    def refreshAll( self ):
-        print("refresh all")
-        self.lineEdit.setText(self.journalDir)
-        self.lineEdit_2.setText(self.screenshotDir)
-        self.lineEdit_3.setText(self.saveDir)
-
-       
+      
     def returnPressedSlot(self, lineType):
-        print("returnPressed")
         if lineType == "journal":
             directory =  self.lineEdit.text()
-            self.journalDir = self.model.setDirectory(directory)
+            self.journalDir = self.setDirectory(directory)
+            self.lineEdit.setText(self.journalDir)
         elif lineType == "screenshots":
             directory =  self.lineEdit_2.text()
-            self.screenshotDir = self.model.setDirectory(directory)
+            self.screenshotDir = self.setDirectory(directory)
+            self.lineEdit_2.setText(self.screenshotDir)
         elif lineType == "save":
             directory =  self.lineEdit_3.text()
-            self.saveDir = self.model.setDirectory(directory)
-        self.refreshAll()
+            self.saveDir = self.setDirectory(directory)
+            self.lineEdit_3.setText(self.saveDir)
+
+
+    def setAllDirs(self):
+        print("saveDir: " + self.saveDir)
+        self.setDirectory(self.journalDir)
+        self.setDirectory(self.screenshotDir)
+        self.setDirectory(self.saveDir)
 
 
     def convert(self):
-        print("convert")
-        self.setAll()
-        self.refreshAll()
+        self.setAllDirs()
         worker = Worker(self.processScreenshots)
         worker.signals.result.connect(self.progressPrint)
         worker.signals.finished.connect(lambda: self.progressPrint('Conversion complete'))
@@ -178,8 +139,7 @@ class MainWindowUIClass(Ui_MainWindow):
         self.threadpool.start(worker)
 
 
-    def processScreenshots(self):
-        print("process Screenshots")
+    def processScreenshots(self):        
         i = 0
         data = self.generate_screenshot_dictionary()
         lengthOfDataDict = len(data)
@@ -199,6 +159,9 @@ class MainWindowUIClass(Ui_MainWindow):
                 if (os.path.isfile(originalfile)):
                     img = Image.open(originalfile)
                     newfilename =  f'{self.build_file_name(item)}.png'
+                    #print("original file " + originalfile)
+                    #print("newfilename " + newfilename)
+                    #print("original file " + originalfile)
                     savefilefull = f'{self.saveDir}\\{newfilename}'
                     time.sleep(0.01)
 
@@ -267,6 +230,12 @@ class MainWindowUIClass(Ui_MainWindow):
                 continue
 
         return data
+
+
+    def setDirectory( self, directory ):
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        return directory
 
     
     def onLastClosed(self):
