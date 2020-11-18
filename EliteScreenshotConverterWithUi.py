@@ -86,7 +86,6 @@ class MainWindowUIClass(Ui_MainWindow):
 
         
     def browseSlot(self, lineType):
-        print("browse slot")
         if lineType == "journal":
             directory = QtWidgets.QFileDialog.getExistingDirectory(
                         None,
@@ -123,7 +122,6 @@ class MainWindowUIClass(Ui_MainWindow):
 
 
     def setAllDirs(self):
-        print("saveDir: " + self.saveDir)
         self.setDirectory(self.journalDir)
         self.setDirectory(self.screenshotDir)
         self.setDirectory(self.saveDir)
