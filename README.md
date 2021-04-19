@@ -2,7 +2,7 @@
 A simple screenshot converter written in Python 3.
 
 ## Introduction
-I spent a long time looking for a simple screenshot converter for the huge bitmap screenshots produced by Elite Dangerous. I couldn't find a suitable tool, so in December 2020, I made my own in Python. It uses Python 3.8, PyQt5 and Pillow-SIMD. I tried to create an .exe version using AutoPy2Exe, but due to my lack of knowledge, I couldn't get it to work on anything other than Windows 7. The source and dodgy executables are included for your amusement.
+I spent a long time looking for a simple screenshot converter for the huge bitmap screenshots produced by Elite Dangerous. I couldn't find a suitable tool, so in December 2020 I made my own in Python. It uses Python 3.8, PyQt5 and Pillow-SIMD. I tried to create an .exe version using AutoPy2Exe, but due to my lack of knowledge I couldn't get it to work on anything other than Windows 7. This dodgy executable is included for your amusement.
 
 ## Requirements
 It was produced using Python 3.8, PyQt5, OrJSON and Pillow-SIMD, so you'll probably need all of them! I used Qt Designer for the GUI.
